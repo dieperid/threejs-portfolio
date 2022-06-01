@@ -11,6 +11,10 @@ import * as THREE from 'three';
 var radius = 3,     // Radius of the earth
     segments = 32;  // Number of segments of the earth
 
+/**
+ * Function to create a sun
+ * @returns {THREE.SphereGeometry} The sun
+ */
 export function createSun()
 {
     const sun = new THREE.Mesh(

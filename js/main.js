@@ -20,8 +20,8 @@ import { addCubicRoom, addRectangularRoom } from './objects/room.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
-	renderer.setSize(innerWidth, innerHeight);
-	renderer.setPixelRatio(devicePixelRatio);
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(devicePixelRatio);
 camera.position.z = 17;
 camera.position.y = 15;
 camera.position.x = 30;
@@ -34,29 +34,26 @@ document.body.appendChild(stats.domElement);
 document.body.appendChild(renderer.domElement);
 
 // Creating the earth, the clouds, the sun and the stars
-const 	sun = createSun(),
-		earth = createEarth(),
-		clouds = createClouds(),
-		stars = createStars();
+const sun = createSun(),
+	earth = createEarth(),
+	clouds = createClouds(),
+	stars = createStars();
 
 // Adding these object to the scene
 const elements = [
-	sun,
-	earth,
-	clouds,
-	stars
+	sun, earth, clouds, stars
 ];
 
-elements.forEach(addSceneElement)
 
-// Creating 2 types of light and adding them to the scene
+// Creating a light for the sun and the earth
 const earthLight = new THREE.PointLight(0xffffff, 3, 100);
-earthLight.position.set(earth.position.x,earth.position.y,earth.position.z);
-scene.add(earthLight);
-
+earthLight.position.set(earth.position.x, earth.position.y, earth.position.z);
 const sunLight = new THREE.PointLight(0xffffff, 3, 100);
-sunLight.position.set(sun.position.x, sun.position.y ,sun.position.z);
-scene.add(sunLight);
+sunLight.position.set(sun.position.x, sun.position.y, sun.position.z);
+
+// Adding the lights to the elements array
+elements.push(earthLight);
+elements.push(sunLight);
 
 addGuiFolder();
 
@@ -68,8 +65,10 @@ window.addEventListener("keydown", function (event) {
 	}
 })
 
-function animate(){
-	
+elements.forEach(addSceneElement)
+
+function animate() {
+
 	window.requestAnimationFrame(animate);
 	earth.rotation.y += 0.005;
 	clouds.rotation.y += 0.005;
@@ -80,6 +79,9 @@ function animate(){
 	stats.update();
 }
 
+/**
+ * Function to render the scene and the camera
+ */
 function render() {
 	renderer.render(scene, camera);
 }
@@ -96,6 +98,10 @@ function addGuiFolder() {
 	cameraFolder.add(camera.position, 'z', -30, 30, 0.01);
 }
 
-function addSceneElement(element){
-	scene.add(element);	
+/**
+ * Function to add item to the scene
+ * @param {const} item Item to add 
+ */
+function addSceneElement(item) {
+	scene.add(item);
 }
