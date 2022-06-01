@@ -51,6 +51,8 @@ earthLight.position.set(earth.position.x, earth.position.y, earth.position.z);
 const sunLight = new THREE.PointLight(0xffffff, 3, 100);
 sunLight.position.set(sun.position.x, sun.position.y, sun.position.z);
 
+const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+scene.add(light);
 // Adding the lights to the elements array
 elements.push(earthLight);
 elements.push(sunLight);
@@ -92,6 +94,12 @@ animate();
  * Function to add folder to the GUI
  */
 function addGuiFolder() {
+
+	const pointLight = gui.addFolder('THREE.PointLight');
+	pointLight.add(earthLight.position, 'x', -30, 30, 0.01);
+	pointLight.add(earthLight.position, 'y', -30, 30, 0.01);
+	pointLight.add(earthLight.position, 'z', -30, 30, 0.01);
+
 	const cameraFolder = gui.addFolder('Camera');
 	cameraFolder.add(camera.position, 'x', -30, 30, 0.01);
 	cameraFolder.add(camera.position, 'y', -30, 30, 0.01);
