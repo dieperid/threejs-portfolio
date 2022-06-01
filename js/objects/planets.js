@@ -8,9 +8,21 @@
 import '../../css/style.css';
 import * as THREE from 'three';
 
+var radius = 3,     // Radius of the earth
+    segments = 32;  // Number of segments of the earth
 
-var radius = 0.8,   // Radius of the earth
-    segments =32;   // Number of segments of the earth
+export function createSun()
+{
+    const sun = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, segments,segments),
+        new THREE.MeshPhongMaterial({
+            map: new THREE.TextureLoader().load('../../images/2k_sun.jpg')
+        })
+    );
+    sun.position.set(10,0,15);
+
+    return sun;
+}
 
 /**
  * Function to create an earth
@@ -22,14 +34,14 @@ export function createEarth()
     const earth = new THREE.Mesh(
         new THREE.SphereGeometry(radius,segments,segments),
         new THREE.MeshPhongMaterial({
-            map: new THREE.TextureLoader().load('../../images/2_no_clouds_4k.jpg'),
-            bumpMap: new THREE.TextureLoader().load('../../images/elev_bump_4k.jpg'),
+            map: new THREE.TextureLoader().load('../../images/2k_earth_daymap.jpg'),
+            bumpMap: new THREE.TextureLoader().load('../../images/elev_bumps_4k.jpg'),
             bumpScale: 0.005,
-            specularMap: new THREE.TextureLoader().load('../../images/water_4k.png'),
+            specularMap: new THREE.TextureLoader().load('../../images/water_4k.jpg'),
             specular: new THREE.Color('grey')
         })
     );
-    earth.position.set(-5,0,-3);    // Setting the position of the earth
+    earth.position.set(-10,0,-15);    // Setting the position of the earth
 
     // Return the earth
     return earth;
@@ -49,7 +61,7 @@ export function createClouds()
             transparent: true
         })
     );
-    clouds.position.set(-5,0,-3);   // Setting the position of the clouds
+    clouds.position.set(-10,0,-15);   // Setting the position of the clouds
 
     // Return the clouds
     return clouds;
@@ -62,9 +74,9 @@ export function createClouds()
 export function createStars()
 {
     return new THREE.Mesh(
-        new THREE.SphereGeometry(90, 64, 64),
+        new THREE.SphereGeometry(200, 64, 64),
         new THREE.MeshBasicMaterial({
-            map: new THREE.TextureLoader().load('../../images/galaxy_starfield.png'),
+            map: new THREE.TextureLoader().load('../../images/2k_stars_milky_way.jpg'),
             side: THREE.BackSide
         })
     );

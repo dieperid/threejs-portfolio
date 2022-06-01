@@ -7,10 +7,10 @@
 import '../css/style.css';
 import * as THREE from 'three';
 import {GUI} from 'dat.gui';
+import Stats from 'three/examples/jsm/libs/stats.module'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-import {createEarth, createClouds, createStars} from './objects/earth.js';
+import {createSun, createEarth, createClouds, createStars} from './objects/planets.js';
 import {addCubicRoom, addRectangularRoom} from './objects/room.js';
-
 
 /**
  * This block of code is used to create a scene,
@@ -19,59 +19,59 @@ import {addCubicRoom, addRectangularRoom} from './objects/room.js';
  */
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
-camera.position.z = 10;
+camera.position.z = 17;
+camera.position.y = 15;
+camera.position.x = 30;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(devicePixelRatio);
 const controls = new OrbitControls(camera, renderer.domElement);
 var gui = new GUI();
 
-
+const stats = Stats()
+document.body.appendChild(stats.domElement);
 document.body.appendChild(renderer.domElement);
 
 // Creating the earth, the clouds and the stars
+const sun = createSun();
 const earth = createEarth();
 const clouds = createClouds();
 const stars = createStars();
-
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
 
 // Adding these object to the scene
 scene.add(stars);
 scene.add(clouds);
 scene.add(earth);
+scene.add(sun);
 
 // Creating 2 types of light and adding them to the scene
-scene.add(new THREE.AmbientLight(0x333333));
-var light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(5,3,5);
+// scene.add(new THREE.AmbientLight(0xffffff));
+var light = new THREE.DirectionalLight(0xffffff, 2);
+var helper = new THREE.DirectionalLightHelper(light, 2);
+light.position.set(0, 0, 0);
+light.target = earth;
 scene.add(light);
 
-addCubicRoom(scene, 2, 0, 0, 8);
-addRectangularRoom(scene, 2, 2, 0, 2, 0, 4);
-
 const cameraFolder = gui.addFolder('Camera');
-cameraFolder.add(camera.position, 'x', 0, 10);
-cameraFolder.add(camera.position, 'y', 0, 10);
-cameraFolder.add(camera.position, 'z', 0, 10);
+cameraFolder.add(camera.position, 'x', 0, 30);
+cameraFolder.add(camera.position, 'y', 0, 30);
+cameraFolder.add(camera.position, 'z', 0, 30);
 
 window.addEventListener("keydown", function(event) {
 	switch (event.code) {
 		case "KeyW":
-			camera.position.set(camera.position.x += 1, 0, 0);
+			camera.position.set(camera.position.x, camera.position.y, camera.position.z -= 0.1);
 			break;
 	}
 })
 
 
 const tick = () => {
+	stats.update();
 	window.requestAnimationFrame(tick);
-	earth.rotation.y += 0.003;
-	clouds.rotation.y += 0.003;
+	earth.rotation.y += 0.005;
+	clouds.rotation.y += 0.005;
+	sun.rotation.y += 0.005;
 	renderer.render( scene, camera );
 	
 }
