@@ -46,12 +46,12 @@ const elements = [
 
 
 // Creating a light for the sun and the earth
-const earthLight = new THREE.PointLight(0xffffff, 3, 100);
+const earthLight = new THREE.PointLight(0xffffff, 1, 100);
 earthLight.position.set(earth.position.x, earth.position.y, earth.position.z);
 const sunLight = new THREE.PointLight(0xffffff, 3, 100);
 sunLight.position.set(sun.position.x, sun.position.y, sun.position.z);
 
-const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+const light = new THREE.AmbientLight(0xffffff, 1);
 scene.add(light);
 // Adding the lights to the elements array
 elements.push(earthLight);
