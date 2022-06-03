@@ -70,7 +70,7 @@ window.addEventListener("keydown", function (event) {
 	}
 })
 
-elements.forEach(addSceneElement)
+elements.forEach(addSceneElement);
 
 function animate() {
 
