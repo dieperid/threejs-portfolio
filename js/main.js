@@ -11,6 +11,7 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createSun, createEarth, createClouds, createStars } from './objects/planets.js';
 import { addCubicRoom, addRectangularRoom } from './objects/room.js';
+import { RectAreaLight } from 'three';
 
 /**
  * This block of code is used to create a scene,
@@ -19,7 +20,9 @@ import { addCubicRoom, addRectangularRoom } from './objects/room.js';
  */
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({
+	antialias: true
+});
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(devicePixelRatio);
 camera.position.z = 17;
