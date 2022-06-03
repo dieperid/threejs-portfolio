@@ -11,7 +11,8 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createSun, createEarth, createClouds, createStars } from './objects/planets.js';
 import { addCubicRoom, addRectangularRoom } from './objects/room.js';
-import { RectAreaLight } from 'three';
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
+import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 
 /**
  * This block of code is used to create a scene,
@@ -47,18 +48,18 @@ const elements = [
 	sun, earth, clouds, stars
 ];
 
+RectAreaLightUniformsLib.init();
 
-// Creating a light for the sun and the earth
-const earthLight = new THREE.PointLight(0xffffff, 1, 100);
-earthLight.position.set(earth.position.x, earth.position.y, earth.position.z);
-const sunLight = new THREE.PointLight(0xffffff, 3, 100);
-sunLight.position.set(sun.position.x, sun.position.y, sun.position.z);
+const rectLight = new THREE.RectAreaLight(0xffffff, 1.5, 10, 10);
+rectLight.position.set(earth.position.x, 1.5, earth.position.z + 4);
+rectLight.lookAt(earth.position.x, earth.position.y, earth.position.z);
+scene.add(rectLight);
 
-const light = new THREE.AmbientLight(0xffffff, 1);
-scene.add(light);
-// Adding the lights to the elements array
-elements.push(earthLight);
-elements.push(sunLight);
+const rectLightHelper = new RectAreaLightHelper(rectLight);
+rectLight.add(rectLightHelper);
+
+// const light = new THREE.AmbientLight(0xffffff, 1);
+// scene.add(light);
 
 addGuiFolder();
 
@@ -81,6 +82,7 @@ function animate() {
 
 	render();
 
+	window.addEventListener('resize', onWindowResize);
 	stats.update();
 }
 
@@ -93,15 +95,22 @@ function render() {
 
 animate();
 
+function onWindowResize() {
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	camera.aspect = (window.innerWidth / window.innerHeight);
+	camera.updateProjectionMatrix();
+}
+
 /**
  * Function to add folder to the GUI
  */
 function addGuiFolder() {
 
-	const pointLight = gui.addFolder('THREE.PointLight');
-	pointLight.add(earthLight.position, 'x', -30, 30, 0.01);
-	pointLight.add(earthLight.position, 'y', -30, 30, 0.01);
-	pointLight.add(earthLight.position, 'z', -30, 30, 0.01);
+	const rectAreaLight = gui.addFolder('THREE.RectAreaLight');
+	rectAreaLight.add(rectLight, 'intensity', 0.0, 5.0);
+	rectAreaLight.add(rectLight.position, 'x', -30, 30, 0.01);
+	rectAreaLight.add(rectLight.position, 'y', -30, 30, 0.01);
+	rectAreaLight.add(rectLight.position, 'z', -30, 30, 0.01);
 
 	const cameraFolder = gui.addFolder('Camera');
 	cameraFolder.add(camera.position, 'x', -30, 30, 0.01);

@@ -18,7 +18,7 @@ var radius = 3,     // Radius of the earth
 export function createSun() {
     const sun = new THREE.Mesh(
         new THREE.SphereGeometry(radius, segments, segments),
-        new THREE.MeshPhongMaterial({
+        new THREE.MeshStandardMaterial({
             map: new THREE.TextureLoader().load('../../images/2k_sun.jpg')
         })
     );
@@ -35,12 +35,11 @@ export function createEarth() {
     // Creating the earth with all of the parameters
     const earth = new THREE.Mesh(
         new THREE.SphereGeometry(radius, segments, segments),
-        new THREE.MeshPhongMaterial({
+        new THREE.MeshStandardMaterial({
             map: new THREE.TextureLoader().load('../../images/2k_earth_daymap.jpg'),
             bumpMap: new THREE.TextureLoader().load('../../images/elev_bump_4k.jpg'),
             bumpScale: 0.005,
-            specularMap: new THREE.TextureLoader().load('../../images/water_4k.png'),
-            specular: new THREE.Color('grey')
+            emissiveMap: new THREE.TextureLoader().load('../../images/water_4k.png'),
         })
     );
     earth.position.set(-10, 0, -15);    // Setting the position of the earth
@@ -57,7 +56,7 @@ export function createClouds() {
     // Creating the clouds with all of the parameters
     const clouds = new THREE.Mesh(
         new THREE.SphereGeometry(radius + 0.003, segments, segments),
-        new THREE.MeshPhongMaterial({
+        new THREE.MeshStandardMaterial({
             map: new THREE.TextureLoader().load('../../images/fair_clouds_4k.png'),
             transparent: true
         })
