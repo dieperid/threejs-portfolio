@@ -95,6 +95,9 @@ function render() {
 
 animate();
 
+/**
+ * Function to update the size of the Renderer
+ */
 function onWindowResize() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	camera.aspect = (window.innerWidth / window.innerHeight);
