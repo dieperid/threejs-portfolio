@@ -7,12 +7,13 @@
 import '../css/style.css';
 import * as THREE from 'three';
 import { GUI } from 'dat.gui';
-import Stats from 'three/examples/jsm/libs/stats.module'
+import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createSun, createEarth, createClouds, createStars } from './objects/planets.js';
 import { addCubicRoom, addRectangularRoom } from './objects/room.js';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
+import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
 
 /**
  * This block of code is used to create a scene,
@@ -26,11 +27,15 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(devicePixelRatio);
-camera.position.z = 17;
-camera.position.y = 15;
-camera.position.x = 30;
+
+// Camera:Setup
+camera.position.set(20, 15, 20);
 
 const controls = new OrbitControls(camera, renderer.domElement);
+const personControls = new FirstPersonControls(camera, document.body);
+
+console.log(personControls);
+
 var gui = new GUI();
 
 const stats = Stats()
@@ -51,28 +56,24 @@ const elements = [
 RectAreaLightUniformsLib.init();
 
 const rectLight = new THREE.RectAreaLight(0xffffff, 1.5, 10, 10);
-rectLight.position.set(earth.position.x, 1.5, earth.position.z + 4);
+rectLight.position.set(earth.position.x + 3, 1.5, earth.position.z + 3);
 rectLight.lookAt(earth.position.x, earth.position.y, earth.position.z);
 scene.add(rectLight);
 
 const rectLightHelper = new RectAreaLightHelper(rectLight);
 rectLight.add(rectLightHelper);
 
-// const light = new THREE.AmbientLight(0xffffff, 1);
-// scene.add(light);
+const light = new THREE.AmbientLight(0xffffff, 1);
+scene.add(light);
 
 addGuiFolder();
 
-window.addEventListener("keydown", function (event) {
-	switch (event.code) {
-		case "KeyW":
-			camera.position.set(camera.position.x, camera.position.y, camera.position.z -= 0.1);
-			break;
-	}
-})
 
 elements.forEach(addSceneElement);
 
+/**
+ * Function to render the scene
+ */
 function animate() {
 
 	window.requestAnimationFrame(animate);
@@ -108,6 +109,9 @@ function onWindowResize() {
  * Function to add folder to the GUI
  */
 function addGuiFolder() {
+
+	const ambientLight = gui.addFolder('THREE:AmbientLight');
+	ambientLight.add(light, 'intensity', 0.0, 5.0);
 
 	const rectAreaLight = gui.addFolder('THREE.RectAreaLight');
 	rectAreaLight.add(rectLight, 'intensity', 0.0, 5.0);

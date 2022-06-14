@@ -22,7 +22,7 @@ export function createSun() {
             map: new THREE.TextureLoader().load('../../images/2k_sun.jpg')
         })
     );
-    sun.position.set(10, 0, 15);
+    sun.position.set(0, 0, 0);
 
     return sun;
 }
@@ -42,7 +42,7 @@ export function createEarth() {
             emissiveMap: new THREE.TextureLoader().load('../../images/water_4k.png'),
         })
     );
-    earth.position.set(-10, 0, -15);    // Setting the position of the earth
+    earth.position.set(-20, 0, -20);    // Setting the position of the earth
 
     // Return the earth
     return earth;
@@ -61,7 +61,7 @@ export function createClouds() {
             transparent: true
         })
     );
-    clouds.position.set(-10, 0, -15);   // Setting the position of the clouds
+    clouds.position.set(-20, 0, -20);   // Setting the position of the clouds
 
     // Return the clouds
     return clouds;
