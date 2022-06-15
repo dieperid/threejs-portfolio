@@ -20,59 +20,83 @@ import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonCont
  * a camera to show the elements of the website,
  * a renderer to display 3D and finally a controls to move the camera.
  */
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({
-	antialias: true
-});
-renderer.setSize(innerWidth, innerHeight);
-renderer.setPixelRatio(devicePixelRatio);
 
-// Camera:Setup
-camera.position.set(20, 15, 20);
+let app, stats, gui;
+let camera, controls, scene, renderer, cameraControlsFirstPerson;
+let earth, sun, clouds, stars;
+let rectLight, rectLightHelper, light;
 
-const controls = new OrbitControls(camera, renderer.domElement);
-const personControls = new FirstPersonControls(camera, document.body);
+const clock = new THREE.Clock();
 
-console.log(personControls);
+init();
+animate();
 
-var gui = new GUI();
+function init() {
+	app = document.getElementById('app');
 
-const stats = Stats()
-document.body.appendChild(stats.domElement);
-document.body.appendChild(renderer.domElement);
+	scene = new THREE.Scene();
 
-// Creating the earth, the clouds, the sun and the stars
-const sun = createSun(),
-	earth = createEarth(),
-	clouds = createClouds(),
+	camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
+	camera.position.set(40, 40, 40);
+	camera.lookAt(scene.position);
+
+	renderer = new THREE.WebGLRenderer({
+		antialias: true
+	});
+	renderer.setSize(innerWidth, innerHeight);
+	renderer.setPixelRatio(devicePixelRatio);
+	app.appendChild(renderer.domElement);
+
+	controls = new OrbitControls(camera, renderer.domElement);
+	cameraControlsFirstPerson = new FirstPersonControls(camera, renderer.domElement);
+	cameraControlsFirstPerson.movementSpeed = 200;
+	cameraControlsFirstPerson.lookSpeed = 0.1;
+
+
+	// Camera:Setup
+
+	console.log(cameraControlsFirstPerson);
+
+	gui = new GUI();
+
+	stats = new Stats()
+	app.appendChild(stats.domElement);
+	app.appendChild(renderer.domElement);
+
+	window.addEventListener('resize', onWindowResize);
+
+	// Creating the earth, the clouds, the sun and the stars
+	sun = createSun();
+	earth = createEarth();
+	clouds = createClouds();
 	stars = createStars();
 
-// Adding these object to the scene
-const elements = [
-	sun, earth, clouds, stars
-];
+	// Adding these object to the scene
+	const elements = [
+		sun, earth, clouds, stars
+	];
 
-RectAreaLightUniformsLib.init();
+	RectAreaLightUniformsLib.init();
 
-const rectLight = new THREE.RectAreaLight(0xffffff, 1.5, 10, 10);
-rectLight.position.set(earth.position.x + 3, 1.5, earth.position.z + 3);
-rectLight.lookAt(earth.position.x, earth.position.y, earth.position.z);
-scene.add(rectLight);
+	rectLight = new THREE.RectAreaLight(0xffffff, 1.5, 10, 10);
+	rectLight.position.set(earth.position.x + 3, 1.5, earth.position.z + 3);
+	rectLight.lookAt(earth.position.x, earth.position.y, earth.position.z);
+	scene.add(rectLight);
 
-const rectLightHelper = new RectAreaLightHelper(rectLight);
-rectLight.add(rectLightHelper);
+	rectLightHelper = new RectAreaLightHelper(rectLight);
+	rectLight.add(rectLightHelper);
 
-const light = new THREE.AmbientLight(0xffffff, 1);
-scene.add(light);
+	light = new THREE.AmbientLight(0xffffff, 1);
+	scene.add(light);
 
-addGuiFolder();
+	addGuiFolder();
+	elements.forEach(addSceneElement);
+}
 
-
-elements.forEach(addSceneElement);
+animate();
 
 /**
- * Function to render the scene
+ * Function to render the sceneww
  */
 function animate() {
 
@@ -82,8 +106,6 @@ function animate() {
 	sun.rotation.y += 0.005;
 
 	render();
-
-	window.addEventListener('resize', onWindowResize);
 	stats.update();
 }
 
@@ -91,18 +113,22 @@ function animate() {
  * Function to render the scene and the camera
  */
 function render() {
-	renderer.render(scene, camera);
-}
 
-animate();
+	cameraControlsFirstPerson.update(clock.getDelta());
+	renderer.render(scene, camera);
+
+}
 
 /**
  * Function to update the size of the Renderer
  */
 function onWindowResize() {
+
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	camera.aspect = (window.innerWidth / window.innerHeight);
 	camera.updateProjectionMatrix();
+	cameraControlsFirstPerson.handleResize();
+
 }
 
 /**
