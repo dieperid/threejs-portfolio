@@ -14,6 +14,7 @@ import { addCubicRoom, addRectangularRoom } from './objects/room.js';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 /**
  * This block of code is used to create a scene,
@@ -32,9 +33,10 @@ init();
 animate();
 
 function init() {
-	app = document.getElementById('app');
 
 	scene = new THREE.Scene();
+
+	app = document.getElementById('app');
 
 	camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
 	camera.position.set(40, 40, 40);
@@ -48,10 +50,12 @@ function init() {
 	app.appendChild(renderer.domElement);
 
 	controls = new OrbitControls(camera, renderer.domElement);
-	cameraControlsFirstPerson = new FirstPersonControls(camera, renderer.domElement);
+	cameraControlsFirstPerson = new PointerLockControls( camera, document.body );
+	// cameraControlsFirstPerson = new FirstPersonControls(camera, renderer.domElement);
 	cameraControlsFirstPerson.movementSpeed = 200;
 	cameraControlsFirstPerson.lookSpeed = 0.1;
 
+	scene.add( cameraControlsFirstPerson.getObject() );
 
 	// Camera:Setup
 
@@ -70,6 +74,8 @@ function init() {
 	earth = createEarth();
 	clouds = createClouds();
 	stars = createStars();
+
+	addRectangularRoom(scene, 40, 5, 10, 5, 10, 0);
 
 	// Adding these object to the scene
 	const elements = [
@@ -114,7 +120,7 @@ function animate() {
  */
 function render() {
 
-	cameraControlsFirstPerson.update(clock.getDelta());
+	// cameraControlsFirstPerson.update(clock.getDelta());
 	renderer.render(scene, camera);
 
 }
